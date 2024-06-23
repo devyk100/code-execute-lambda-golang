@@ -68,7 +68,9 @@ func cppExec(Code string, Inputs string) string {
 		return err.Error()
 	}
 	cmd := exec.Command("g++", "/tmp/main.cpp", "-o", "/tmp/a.out")
-	stdin, err := cmd.StdinPipe()
+	cmd.Run()
+	cmd2 := exec.Command("/tmp/a.out")
+	stdin, err := cmd2.StdinPipe()
 	if err != nil {
 		return err.Error()
 	}
@@ -76,11 +78,6 @@ func cppExec(Code string, Inputs string) string {
 		defer stdin.Close()
 		io.WriteString(stdin, Inputs)
 	}()
-	output, err := cmd.CombinedOutput()
-	if err != nil {
-		return string(output) + "\n" + err.Error()
-	}
-	cmd2 := exec.Command("/tmp/a.out")
 	output2, err2 := cmd2.CombinedOutput()
 	if err2 != nil {
 		return string(output2) + "\n" + err2.Error()
